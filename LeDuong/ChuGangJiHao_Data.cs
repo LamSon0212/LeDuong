@@ -13,7 +13,7 @@ namespace LeDuong
         private string beizhu;
 
         private string fanWei;
-        private string guoCheng;
+        private string suoYinHao;
 
         private double c_xia;
         private double c_shang;
@@ -116,7 +116,7 @@ namespace LeDuong
         public string ChuGangJiHao { get => chuGangJiHao; set => chuGangJiHao = value; }
         public string Beizhu { get => beizhu; set => beizhu = value; }
         public string FanWei { get => fanWei; set => fanWei = value; }
-        public string GuoCheng { get => guoCheng; set => guoCheng = value; }
+        public string SuoYinHao { get => suoYinHao; set => suoYinHao = value; }
         public double C_xia { get => c_xia; set => c_xia = value; }
         public double C_shang { get => c_shang; set => c_shang = value; }
         public double C_mubiao { get => c_mubiao; set => c_mubiao = value; }
@@ -196,7 +196,7 @@ namespace LeDuong
             ChuGangJiHao = row[0].ToString();
             Beizhu = row[1].ToString();
             FanWei = row[5].ToString();
-            // GuoCheng = row[6].ToString();
+            SuoYinHao = row[6].ToString();
 
             var Value1 = row[9].ToString().Replace(" ", "");
             if (Value1 != "")

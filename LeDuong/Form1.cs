@@ -30,7 +30,7 @@ namespace LeDuong
 
         TenNguyenTo excel1 = new TenNguyenTo();
         TenNguyenTo excel2 = new TenNguyenTo();
-        TenNguyenTo IndexExcel2 = new TenNguyenTo();
+        //TenNguyenTo IndexExcel2 = new TenNguyenTo();
 
         // docc file du lieu
         void FileDataLoadExcel()
@@ -158,6 +158,7 @@ namespace LeDuong
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            // Thong nhat vaf chuyen cac nguyen to ve mot ky hieu co dinh, de so sanh voi textbox ngoai giao dien
             excel1.C = iniFile.Read("C1", "Excel1");
             excel1.Si = iniFile.Read("Si1", "Excel1");
             excel1.Mn = iniFile.Read("Mn1", "Excel1");
@@ -183,7 +184,6 @@ namespace LeDuong
             excel1.Sb = iniFile.Read("Sb1", "Excel1");
             excel1.Zn = iniFile.Read("Zn1", "Excel1");
 
-
             excel2.C = iniFile.Read("C1", "Excel2");
             excel2.Si = iniFile.Read("Si1", "Excel2");
             excel2.Mn = iniFile.Read("Mn1", "Excel2");
@@ -208,44 +208,22 @@ namespace LeDuong
             excel2.Pb = iniFile.Read("Pb1", "Excel2");
             excel2.Sb = iniFile.Read("Sb1", "Excel2");
             excel2.Zn = iniFile.Read("Zn1", "Excel2");
-
-            //IndexExcel2.C = iniFile.Read("C1", "IndexExcel2");
-            //IndexExcel2.Si = iniFile.Read("Si1", "IndexExcel2");
-            //IndexExcel2.Mn = iniFile.Read("Mn1", "IndexExcel2");
-            //IndexExcel2.P = iniFile.Read("P1", "IndexExcel2");
-            //IndexExcel2.S = iniFile.Read("S1", "IndexExcel2");
-            //IndexExcel2.TAl = iniFile.Read("TAl1", "IndexExcel2");
-            //IndexExcel2.SAl = iniFile.Read("SAl1", "IndexExcel2");
-            //IndexExcel2.N = iniFile.Read("N1", "IndexExcel2");
-            //IndexExcel2.Cu = iniFile.Read("Cu1", "IndexExcel2");
-            //IndexExcel2.Ni = iniFile.Read("Ni1", "IndexExcel2");
-            //IndexExcel2.Cr = iniFile.Read("Cr1", "IndexExcel2");
-            //IndexExcel2.Nb = iniFile.Read("Nb1", "IndexExcel2");
-            //IndexExcel2.Ti = iniFile.Read("Ti1", "IndexExcel2");
-            //IndexExcel2.V = iniFile.Read("V1", "IndexExcel2");
-            //IndexExcel2.Mo = iniFile.Read("Mo1", "IndexExcel2");
-            //IndexExcel2.B = iniFile.Read("B1", "IndexExcel2");
-            //IndexExcel2.Ca = iniFile.Read("Ca1", "IndexExcel2");
-            //IndexExcel2.As = iniFile.Read("As1", "IndexExcel2");
-            //IndexExcel2.Sn = iniFile.Read("Sn1", "IndexExcel2");
-            //IndexExcel2.O = iniFile.Read("O1", "IndexExcel2");
-            //IndexExcel2.Zr = iniFile.Read("Zr1", "IndexExcel2");
-            //IndexExcel2.Pb = iniFile.Read("Pb1", "IndexExcel2");
-            //IndexExcel2.Sb = iniFile.Read("Sb1", "IndexExcel2");
-            //IndexExcel2.Zn = iniFile.Read("Zn1", "IndexExcel2");
-
-
         }
 
         private void btnChart_Click(object sender, EventArgs e)
         {
             List<Excel2_OK> lsExcel2_OK = new List<Excel2_OK>();
-            
-            int Index = 0;
-            Index = Convert.ToInt16( iniFile.Read(txbThanhPhan.Text, "IndexExcel2"));
+
+            //int IndexEx1 = 0;
+            int IndexEx2 = 0;
+            IndexEx2 = Convert.ToInt16(iniFile.Read(txbThanhPhan.Text, "IndexExcel2"));
+          //  IndexEx1 = Convert.ToInt16(iniFile.Read(txbThanhPhan.Text, "IndexExcel1"));
+
             string nguyenTo = txbThanhPhan.Text;
             double up = Convert.ToDouble(txbGioiHanTren.EditValue);
             double down = Convert.ToDouble(txbGioiHanDuoi.EditValue);
+
+            // file chugangjihao lay cac gia tri thoa man "RR" va thoa man gioi han tren va duoi
             var queryRR = (from data in lsChuGangJiHaos
                            where data.FanWei == "RR"
                            && (nguyenTo == excel2.C ? data.C_xia >= down && data.C_shang <= up : true)
@@ -283,6 +261,7 @@ namespace LeDuong
             //           }).ToList();
             DataTable dtRR = ToDataTable(queryRR);
 
+            // file chugangjihao lay cac gia tri thoa man gioi han tren va duoi, tuc la bao gom ca MR va RR
             var queryGioiHan = (from data in lsChuGangJiHaos
                                 where (nguyenTo == excel2.C ? data.C_xia >= down && data.C_shang <= up : true)
                                 && (nguyenTo == excel2.Si ? data.Si_xia >= down && data.Si_shang <= up : true)
@@ -318,7 +297,7 @@ namespace LeDuong
             //                        phamvi = data.FanWei
             //                    }).ToList();
             DataTable dtGioiHan = ToDataTable(queryGioiHan);
-            string so = "0123456789";
+
             string ChuGangJiHao = "";
             Double MuBiao = 0;
             for (int i = 0; i < dtRR.Rows.Count; i++)
@@ -327,17 +306,16 @@ namespace LeDuong
                 {
                     if (dtGioiHan.Rows[j][0] == dtRR.Rows[i][0])
                     {
-                        if (dtGioiHan.Rows[j-1][2].ToString() == "MR")
+                        if (dtGioiHan.Rows[j - 1][2].ToString() == "MR" && dtGioiHan.Rows[j - 1][3].ToString() == dtGioiHan.Rows[j][3].ToString())
                         {
                             ChuGangJiHao = dtGioiHan.Rows[j - 1][0].ToString();
-                            MuBiao = Convert.ToDouble(dtGioiHan.Rows[j - 1][(Index + 1) * 3]);
+                            MuBiao = Convert.ToDouble(dtGioiHan.Rows[j - 1][(IndexEx2 + 1) * 3]);
+
+                            Excel2_OK excel2_OK = new Excel2_OK();
+                            excel2_OK.ChuGangJiHao = ChuGangJiHao;
+                            excel2_OK.MuBiao = MuBiao;
+                            lsExcel2_OK.Add(excel2_OK);
                         }
-
-                        Excel2_OK excel2_OK = new Excel2_OK();
-                        excel2_OK.ChuGangJiHao = ChuGangJiHao;
-                        excel2_OK.MuBiao = MuBiao;
-                        lsExcel2_OK.Add(excel2_OK);
-
                     }
                 }
             }
@@ -359,10 +337,100 @@ namespace LeDuong
             //                  phamvi1 = dataGioiHan.phamvi
             //              }).ToList();
 
-           DataTable aabb2 = ToDataTable(lsExcel2_OK);
+            DataTable dtEx2_OK = ToDataTable(lsExcel2_OK);
 
+            var FiltData = (from dataEx1 in lsFileDatas
+                            from dataEx2 in lsExcel2_OK
+                            where dataEx1.ChuGangJiHao == dataEx2.ChuGangJiHao && dataEx1.GuoCheng == txbTram.Text && dataEx1.RiQi >= Convert.ToDateTime(txbFrom.Text) && dataEx1.RiQi <= Convert.ToDateTime(txbTo.Text)
+                            select dataEx1).ToList();
+
+            DataTable dtEx1_OK = ToDataTable(FiltData);
+
+            var Joindata = (from data in FiltData
+                            join data1 in lsExcel2_OK on data.ChuGangJiHao equals data1.ChuGangJiHao
+                            select new
+                            {
+                                data.LuHao,
+                                data.ChuGangJiHao,
+                                data.RiQi,
+                                data.GuoCheng,
+                                C = data.C - data1.MuBiao,
+                                Si = data.Si - data1.MuBiao,
+                                Mn = data.Mn - data1.MuBiao,
+                                P = data.P - data1.MuBiao,
+                                S = data.S - data1.MuBiao,
+                                SAl = data.SAl - data1.MuBiao,
+                                TAl = data.TAl - data1.MuBiao,
+                                CU = data.CU - data1.MuBiao,
+                                NB = data.NB - data1.MuBiao,
+                                B = data.B - data1.MuBiao,
+                                NI = data.NI - data1.MuBiao,
+                                CR = data.CR - data1.MuBiao,
+                                MO = data.MO - data1.MuBiao,
+                                TI = data.TI - data1.MuBiao,
+                                V = data.V - data1.MuBiao,
+                                ZR = data.ZR - data1.MuBiao,
+                                PB = data.PB - data1.MuBiao,
+                                SN = data.SN - data1.MuBiao,
+                                AS = data.AS - data1.MuBiao,
+                                CA = data.CA - data1.MuBiao,
+                                SB = data.SB - data1.MuBiao,
+                                ZN = data.ZN - data1.MuBiao,
+                                N = data.N - data1.MuBiao,
+                                O = data.O - data1.MuBiao,
+                                data1.MuBiao
+                            }).ToList();
+            DataTable JoinData = ToDataTable(Joindata);
+
+            var x = (from r in JoinData.AsEnumerable() select r["ChuGangJiHao"]).Distinct().ToList();
+
+            var x1 = (from r in JoinData.AsEnumerable() select r[4]).Max();
+            var x2 = (from r in JoinData.AsEnumerable() select r[4]).Min();
+            double Max = Math.Abs(0 - Convert.ToDouble(x1));
+            double Min = Math.Abs(0 - Convert.ToDouble(x2));
+            double Maxmaxmin = Math.Max(Max, Min);
+            double DoChia = Maxmaxmin / 10;
+
+            List<double> lsKhoangCach = new List<double>();
+            double Start = 0;
+            if (Convert.ToDouble(x1) < 0)
+            {
+                Start = Convert.ToDouble(x2);
+            }
+            else if (Convert.ToDouble(x1) > 0 & Convert.ToDouble(x2) < 0)
+            {
+                Start = -Maxmaxmin;
+            }
+
+            for (int i = 0; i < 21; i++)
+            {
+                double value = (Start + DoChia * i);
+                lsKhoangCach.Add(value);
+            }
+
+            DataTable tblChart = new DataTable();
+            tblChart.Columns.Add(new DataColumn("Series", typeof(string)));
+            tblChart.Columns.Add(new DataColumn("TrucX", typeof(string)));
+            tblChart.Columns.Add(new DataColumn("Value", typeof(int)));
+
+            foreach (var item in x)
+            {
+                for (int i = 0; i < 20; i++)
+                {
+                    string Series = item.ToString();
+                    string TrucX = lsKhoangCach[i].ToString("0.00") + ">>" + lsKhoangCach[i + 1].ToString("0.00");
+                    int value = 0;
+                    //var Count = (from data1 in Joindata
+                    //             where data1.ChuGangJiHao == item
+                    //             && nguyenTo ==
+                    //             select data1).ToList();
+
+                    tblChart.Rows.Add(Series, TrucX, value);
+                }
+            }
 
         }
+
 
         public DataTable ToDataTable<T>(IList<T> data)
         {
@@ -381,10 +449,10 @@ namespace LeDuong
             return table;
         }
 
-      public  class Excel2_OK
+        public class Excel2_OK
         {
             public string ChuGangJiHao { get; set; }
-            public Double MuBiao { get; set; }
+            public double MuBiao { get; set; }
         }
     }
 }

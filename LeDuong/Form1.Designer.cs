@@ -144,9 +144,9 @@
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.txbFrom.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.txbFrom.Properties.DisplayFormat.FormatString = "";
+            this.txbFrom.Properties.DisplayFormat.FormatString = "yyyy/MM/dd";
             this.txbFrom.Properties.DisplayFormat.FormatType = DevExpress.Utils.FormatType.DateTime;
-            this.txbFrom.Properties.EditFormat.FormatString = "";
+            this.txbFrom.Properties.EditFormat.FormatString = "yyyy/MM/dd";
             this.txbFrom.Properties.EditFormat.FormatType = DevExpress.Utils.FormatType.DateTime;
             this.txbFrom.Properties.Mask.EditMask = "";
             this.txbFrom.Properties.Mask.MaskType = DevExpress.XtraEditors.Mask.MaskType.None;
@@ -167,9 +167,9 @@
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.txbTo.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.txbTo.Properties.DisplayFormat.FormatString = "";
+            this.txbTo.Properties.DisplayFormat.FormatString = "yyyy/MM/dd";
             this.txbTo.Properties.DisplayFormat.FormatType = DevExpress.Utils.FormatType.DateTime;
-            this.txbTo.Properties.EditFormat.FormatString = "";
+            this.txbTo.Properties.EditFormat.FormatString = "yyyy/MM/dd";
             this.txbTo.Properties.EditFormat.FormatType = DevExpress.Utils.FormatType.DateTime;
             this.txbTo.Properties.Mask.EditMask = "";
             this.txbTo.Properties.Mask.MaskType = DevExpress.XtraEditors.Mask.MaskType.None;
