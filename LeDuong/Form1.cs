@@ -1,4 +1,5 @@
-﻿using DevExpress.XtraEditors;
+﻿using DevExpress.XtraCharts;
+using DevExpress.XtraEditors;
 using DevExpress.XtraSplashScreen;
 using ExcelDataReader;
 using System;
@@ -9,6 +10,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace LeDuong
@@ -212,12 +214,14 @@ namespace LeDuong
 
         private void btnChart_Click(object sender, EventArgs e)
         {
+            SplashScreenManager.ShowDefaultWaitForm();
             List<Excel2_OK> lsExcel2_OK = new List<Excel2_OK>();
 
-            //int IndexEx1 = 0;
+            int IndexEx1 = 0;
             int IndexEx2 = 0;
+
+            IndexEx1 = Convert.ToInt16(iniFile.Read(txbThanhPhan.Text, "IndexExcel1"));
             IndexEx2 = Convert.ToInt16(iniFile.Read(txbThanhPhan.Text, "IndexExcel2"));
-          //  IndexEx1 = Convert.ToInt16(iniFile.Read(txbThanhPhan.Text, "IndexExcel1"));
 
             string nguyenTo = txbThanhPhan.Text;
             double up = Convert.ToDouble(txbGioiHanTren.EditValue);
@@ -361,21 +365,21 @@ namespace LeDuong
                                 S = data.S - data1.MuBiao,
                                 SAl = data.SAl - data1.MuBiao,
                                 TAl = data.TAl - data1.MuBiao,
-                                CU = data.CU - data1.MuBiao,
-                                NB = data.NB - data1.MuBiao,
+                                Cu = data.CU - data1.MuBiao,
+                                Nb = data.NB - data1.MuBiao,
                                 B = data.B - data1.MuBiao,
-                                NI = data.NI - data1.MuBiao,
-                                CR = data.CR - data1.MuBiao,
-                                MO = data.MO - data1.MuBiao,
-                                TI = data.TI - data1.MuBiao,
+                                Ni = data.NI - data1.MuBiao,
+                                Cr = data.CR - data1.MuBiao,
+                                Mo = data.MO - data1.MuBiao,
+                                Ti = data.TI - data1.MuBiao,
                                 V = data.V - data1.MuBiao,
-                                ZR = data.ZR - data1.MuBiao,
-                                PB = data.PB - data1.MuBiao,
-                                SN = data.SN - data1.MuBiao,
-                                AS = data.AS - data1.MuBiao,
-                                CA = data.CA - data1.MuBiao,
-                                SB = data.SB - data1.MuBiao,
-                                ZN = data.ZN - data1.MuBiao,
+                                Zr = data.ZR - data1.MuBiao,
+                                Pb = data.PB - data1.MuBiao,
+                                Sn = data.SN - data1.MuBiao,
+                                As = data.AS - data1.MuBiao,
+                                Ca = data.CA - data1.MuBiao,
+                                Sb = data.SB - data1.MuBiao,
+                                Zn = data.ZN - data1.MuBiao,
                                 N = data.N - data1.MuBiao,
                                 O = data.O - data1.MuBiao,
                                 data1.MuBiao
@@ -384,11 +388,61 @@ namespace LeDuong
 
             var x = (from r in JoinData.AsEnumerable() select r["ChuGangJiHao"]).Distinct().ToList();
 
-            var x1 = (from r in JoinData.AsEnumerable() select r[4]).Max();
-            var x2 = (from r in JoinData.AsEnumerable() select r[4]).Min();
+            var lsValue = (from r in JoinData.AsEnumerable()
+                           select new
+                           {
+                               ChuGangJiHao = r["ChuGangJiHao"],
+                               Value = r[IndexEx1]
+                           }).ToList();
+
+            var x1 = lsValue.Max(r => r.Value);
+            var x2 = lsValue.Min(r => r.Value);
+
             double Max = Math.Abs(0 - Convert.ToDouble(x1));
             double Min = Math.Abs(0 - Convert.ToDouble(x2));
             double Maxmaxmin = Math.Max(Max, Min);
+
+            //// Tu dong chia 20 khoang voi do chia tu tinh
+            //double DoChia = Maxmaxmin / 10;
+
+            //List<double> lsKhoangCach = new List<double>();
+            //double Start = 0;
+            //if (Convert.ToDouble(x1) < 0)
+            //{
+            //    Start = Convert.ToDouble(x2);
+            //}
+            //else if (Convert.ToDouble(x1) > 0 & Convert.ToDouble(x2) < 0)
+            //{
+            //    Start = -Maxmaxmin;
+            //}
+
+            //for (int i = 0; i < 21; i++)
+            //{
+            //    double value = (Start + DoChia * i);
+            //    lsKhoangCach.Add(value);
+            //}
+
+            //DataTable tblChart = new DataTable();
+            //tblChart.Columns.Add(new DataColumn("Series", typeof(string)));
+            //tblChart.Columns.Add(new DataColumn("TrucX", typeof(string)));
+            //tblChart.Columns.Add(new DataColumn("Value", typeof(int)));
+
+            //foreach (var item in x)
+            //{
+            //    for (int i = 0; i < 20; i++)
+            //    {
+            //        string Series = item.ToString();
+            //        string TrucX = lsKhoangCach[i].ToString("0.0000") + "~" + lsKhoangCach[i + 1].ToString("0.0000");
+            //        var Count = (from data1 in lsValue
+            //                     where data1.ChuGangJiHao == item
+            //                     && (double)data1.Value <= lsKhoangCach[i + 1] && (double)data1.Value > lsKhoangCach[i]
+            //                     select data1).Count();
+
+            //        tblChart.Rows.Add(Series, TrucX, Count);
+            //    }
+            //}
+
+            // ve theo giao dien
             double DoChia = Maxmaxmin / 10;
 
             List<double> lsKhoangCach = new List<double>();
@@ -418,19 +472,66 @@ namespace LeDuong
                 for (int i = 0; i < 20; i++)
                 {
                     string Series = item.ToString();
-                    string TrucX = lsKhoangCach[i].ToString("0.00") + ">>" + lsKhoangCach[i + 1].ToString("0.00");
-                    int value = 0;
-                    //var Count = (from data1 in Joindata
-                    //             where data1.ChuGangJiHao == item
-                    //             && nguyenTo ==
-                    //             select data1).ToList();
+                    string TrucX = lsKhoangCach[i].ToString("0.0000") + "~" + lsKhoangCach[i + 1].ToString("0.0000");
+                    var Count = (from data1 in lsValue
+                                 where data1.ChuGangJiHao == item
+                                 && (double)data1.Value <= lsKhoangCach[i + 1] && (double)data1.Value > lsKhoangCach[i]
+                                 select data1).Count();
 
-                    tblChart.Rows.Add(Series, TrucX, value);
+                    tblChart.Rows.Add(Series, TrucX, Count);
                 }
             }
 
-        }
+            //tblChart = dv.ToTable();
 
+            chartControl1.DataSource = tblChart;
+
+
+
+            // Specify data members to bind the chart's series template. (3 yếu tố tạo thành 1 đồ thị: tên các đường +Trục X +Value)
+            chartControl1.SeriesDataMember = tblChart.Columns[0].ColumnName;  //SeriesName
+            chartControl1.SeriesTemplate.ArgumentDataMember = tblChart.Columns[1].ColumnName; // Trục X
+
+            chartControl1.SeriesTemplate.ValueDataMembers.AddRange(new string[] { tblChart.Columns[2].ColumnName
+            }); //Values
+
+            //chartControl1.SeriesTemplate.View = new DevExpress.XtraCharts.();
+            //((XYDiagram)chartControl1.Diagram).AxisY.Label.TextPattern = "{V:p0}";
+
+            // Làm đẹp cho đồ thị
+            //if (Convert.ToDouble(SpinMaximum.Value) != 0)
+            //{
+            //    ((XYDiagram)chartControl1.Diagram).AxisY.WholeRange.MaxValue = Convert.ToDouble(SpinMaximum.Value);
+            //}
+
+            ((XYDiagram)chartControl1.Diagram).AxisY.Label.TextColor = Color.Red;
+            ((XYDiagram)chartControl1.Diagram).AxisX.Label.TextPattern = "{V:F2}";
+            ((XYDiagram)chartControl1.Diagram).AxisX.Label.TextColor = Color.Black;
+            ((XYDiagram)chartControl1.Diagram).EnableAxisXZooming = true;
+            ((XYDiagram)chartControl1.Diagram).EnableAxisXScrolling = true;
+            ((XYDiagram)chartControl1.Diagram).ZoomingOptions.AxisXMaxZoomPercent = 200;
+            // Display the chart title and specify the title text.
+            ((XYDiagram)chartControl1.Diagram).AxisX.Title.Text = "鋼液成分分佈圖軟體";
+            ((XYDiagram)chartControl1.Diagram).AxisX.Title.Visibility = DevExpress.Utils.DefaultBoolean.True;
+            ((XYDiagram)chartControl1.Diagram).AxisX.Title.Alignment = StringAlignment.Center;
+            ((XYDiagram)chartControl1.Diagram).AxisX.Title.TextColor = Color.Blue;
+            ((XYDiagram)chartControl1.Diagram).AxisX.Title.Font = new Font("DFKai-SB", 16, FontStyle.Bold);
+            chartControl1.Legend.Font = Font = new Font("DFKai-SB", 12, FontStyle.Regular);
+
+            SplashScreenManager.ShowDefaultWaitForm();
+
+            MessageBox.Show("aaa");
+
+            if (x.Count != 0)
+            {
+                for (int i = 0; i < x.Count; i++)
+                {
+
+                    chartControl1.Series[i].LabelsVisibility = DevExpress.Utils.DefaultBoolean.True;
+                    chartControl1.Series[i].Label.TextPattern = "{V:F0}";
+                }
+            }
+        }
 
         public DataTable ToDataTable<T>(IList<T> data)
         {

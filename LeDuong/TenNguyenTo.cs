@@ -33,5 +33,6 @@ namespace LeDuong
         public string Sb { get; set; }
         public string Zn { get; set; }
 
+ 
     }
 }
